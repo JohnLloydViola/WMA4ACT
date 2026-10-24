@@ -110,6 +110,36 @@
         }
       },
       "response": []
+    },
+    {
+      "name": "Upload document",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "document",
+              "type": "file",
+              "src": []
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/appointments/1/documents",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "appointments",
+            "1",
+            "documents"
+          ]
+        }
+      },
+      "response": []
     }
   ],
   "auth": {
