@@ -41,7 +41,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{ \"owner_name\": \"Maria Santos\", \"pet_name\": \"Bantay\", \"service\": \"Anti-rabies vaccination\", \"appointment_date\": \"2026-11-03 09:30:00\" }",
+          "raw": "{ \"owner_name\": \"\", \"pet_name\": \"Bantay\", \"service\": \"Vaccination\", \"appointment_date\": \"2026-02-31 09:00:00\", \"status\": \"done\" }",
           "options": {
             "raw": {
               "language": "json"
