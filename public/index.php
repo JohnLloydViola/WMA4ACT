@@ -40,5 +40,20 @@ if ($method === 'GET') {
 } 
 
 // ---- Anything else ---- 
+// ---- POST: create ---- 
+if ($method === 'POST' && $id === null) { 
+    $input = Request::json(); 
+    [$data, $errors] = AppointmentValidator::validate($input); 
+    
+    if ($errors) { 
+        Response::error('Validation failed.', 422, $errors); 
+    } 
+    
+    $newId = $repo->create($data); 
+    $created = $repo->find($newId); 
+    
+    Response::success('Appointment created.', $created, 201); 
+}
+
 // Keep this as the LAST line. New routes go ABOVE it. 
 Response::error('Method not allowed.', 405);

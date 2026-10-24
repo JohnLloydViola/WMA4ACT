@@ -23,7 +23,17 @@ final class AppointmentRepository
     $stmt->execute(['id' => $id]); 
     return $stmt->fetch() ?: null; 
   } 
-  
+
   // create(), update() and delete() are added in Stages 7 and 8. 
+  public function create(array $data): int 
+  { 
+          $sql = 'INSERT INTO appointments (owner_name, pet_name, service, appointment_date, status) 
+                  VALUES (:owner_name, :pet_name, :service, :appointment_date, :status)'; 
+          
+          $this->pdo->prepare($sql)->execute($data); 
+          
+          return (int) $this->pdo->lastInsertId(); 
+  }
+
   // Always add new methods ABOVE the final closing brace. 
 }

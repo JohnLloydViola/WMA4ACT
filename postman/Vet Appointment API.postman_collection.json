@@ -33,6 +33,33 @@
         }
       },
       "response": []
+    },
+    {
+      "name": "Create appointment",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{ \"owner_name\": \"Maria Santos\", \"pet_name\": \"Bantay\", \"service\": \"Anti-rabies vaccination\", \"appointment_date\": \"2026-11-03 09:30:00\" }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/appointments",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "appointments"
+          ]
+        }
+      },
+      "response": []
     }
   ],
   "variable": [
