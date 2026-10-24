@@ -6,6 +6,7 @@ require __DIR__ . '/../src/Request.php';
 require __DIR__ . '/../src/AppointmentRepository.php'; 
 require __DIR__ . '/../src/AppointmentValidator.php'; 
 require __DIR__ . '/../src/Auth.php';
+require __DIR__ . '/../src/DocumentUploader.php';
 
 $debug = getenv('APP_DEBUG') === '1';
 
@@ -33,6 +34,26 @@ try {
     // ---- Authentication: write methods need a token ---- 
     if (in_array($method, ['POST', 'PUT', 'DELETE'], true)) { 
         Auth::authorize($method === 'DELETE' ? 'admin' : 'staff'); 
+    }
+
+    // ---- Upload: POST /api/appointments/{id}/documents ---- 
+    if ($id !== null && ($parts[3] ?? '') === 'documents') {
+        if ($method !== 'POST') { 
+            Response::error('Method not allowed.', 405); 
+        } 
+        
+        if ($repo->find($id) === null) { 
+            Response::error('Appointment not found.', 404); 
+        } 
+        
+        if (!isset($_FILES['document'])) { 
+            Response::error('Send the file in "document".', 400); 
+        } 
+        
+        $uploader = new DocumentUploader(__DIR__ . '/uploads'); 
+        $result = $uploader->store($_FILES['document'], $id); 
+        
+        Response::success('Document uploaded.', $result, 201); 
     }
 
     // ---- GET routes ---- 
