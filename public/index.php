@@ -5,6 +5,7 @@ require __DIR__ . '/../src/Response.php';
 require __DIR__ . '/../src/Request.php'; 
 require __DIR__ . '/../src/AppointmentRepository.php'; 
 require __DIR__ . '/../src/AppointmentValidator.php'; 
+require __DIR__ . '/../src/Auth.php';
 
 $debug = getenv('APP_DEBUG') === '1';
 
@@ -28,6 +29,11 @@ try {
     } 
 
     $id = isset($parts[2]) ? (int) $parts[2] : null; 
+
+    // ---- Authentication: write methods need a token ---- 
+    if (in_array($method, ['POST', 'PUT', 'DELETE'], true)) { 
+        Auth::authorize($method === 'DELETE' ? 'admin' : 'staff'); 
+    }
 
     // ---- GET routes ---- 
     if ($method === 'GET' && $id === null) { 

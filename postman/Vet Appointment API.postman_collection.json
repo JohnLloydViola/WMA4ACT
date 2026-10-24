@@ -37,6 +37,9 @@
     {
       "name": "Create appointment",
       "request": {
+        "auth": {
+          "type": "noauth"
+        },
         "method": "POST",
         "header": [],
         "body": {
@@ -109,6 +112,16 @@
       "response": []
     }
   ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{staffToken}}",
+        "type": "string"
+      }
+    ]
+  },
   "variable": [
     {
       "key": "baseUrl",
