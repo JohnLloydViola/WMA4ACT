@@ -1,0 +1,9 @@
+RewriteEngine On 
+
+# Let PHP see the Authorization header 
+RewriteCond %{HTTP:Authorization} . 
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}] 
+
+# Send every request to the single public entry point 
+RewriteCond %{REQUEST_URI} !/public/ 
+RewriteRule ^(.*)$ public/index.php [L,QSA]
