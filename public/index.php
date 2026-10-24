@@ -55,5 +55,31 @@ if ($method === 'POST' && $id === null) {
     Response::success('Appointment created.', $created, 201); 
 }
 
+// ---- PUT: update ---- 
+if ($method === 'PUT' && $id !== null) { 
+    if ($repo->find($id) === null) { 
+        Response::error('Appointment not found.', 404); 
+    } 
+    
+    $input = Request::json(); 
+    [$data, $errors] = AppointmentValidator::validate($input); 
+    
+    if ($errors) { 
+        Response::error('Validation failed.', 422, $errors); 
+    } 
+    
+    $repo->update($id, $data); 
+    Response::success('Appointment updated.', $repo->find($id)); 
+} 
+
+// ---- DELETE: remove ---- 
+if ($method === 'DELETE' && $id !== null) { 
+    if (!$repo->delete($id)) { 
+        Response::error('Appointment not found.', 404); 
+    } 
+    
+    Response::noContent(); 
+}
+
 // Keep this as the LAST line. New routes go ABOVE it. 
 Response::error('Method not allowed.', 405);
