@@ -1,0 +1,52 @@
+{
+  "info": {
+    "_postman_id": "07663430-5fe2-47e4-b726-6a38eb94ab60",
+    "name": "Vet Appointment API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58675034",
+    "_collection_link": "https://go.postman.co/collection/58675034-07663430-5fe2-47e4-b726-6a38eb94ab60?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "List appointments",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/appointments",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "appointments"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": ""
+    },
+    {
+      "key": "staffToken",
+      "value": ""
+    },
+    {
+      "key": "adminToken",
+      "value": ""
+    }
+  ]
+}
