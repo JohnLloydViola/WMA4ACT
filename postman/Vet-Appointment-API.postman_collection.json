@@ -1,0 +1,233 @@
+{
+  "info": {
+    "_postman_id": "07663430-5fe2-47e4-b726-6a38eb94ab60",
+    "name": "Vet-Appointment-API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58675034",
+    "_collection_link": "https://go.postman.co/collection/58675034-07663430-5fe2-47e4-b726-6a38eb94ab60?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "List appointments",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const status = pm.response.code;\r\n\r\nlet message = \"\";\r\n\r\nif (status === 200) {\r\n    message = \"Appointments retrieved successfully.\";\r\n} else if (status === 400) {\r\n    message = \"Bad Request: ID must be a number.\";\r\n} else if (status === 404) {\r\n    message = \"Not Found: Appointment not found.\";\r\n} else {\r\n    message = \"Request failed with status \" + status + \".\";\r\n}\r\n\r\npm.test(status + \" - \" + message, function () {\r\n    pm.expect(status, message).to.eql(200);\r\n});\r\n\r\nif (status === 200) {\r\n    pm.test(\"data is an array\", function () {\r\n        const json = pm.response.json();\r\n        const path = pm.request.url.path;\r\n        const appointmentIndex = path.indexOf(\"appointments\");\r\n\r\n        const id = path[appointmentIndex + 1];\r\n        const isSingleAppointment =\r\n            appointmentIndex !== -1 &&\r\n            id !== undefined &&\r\n            /^\\d+$/.test(id);\r\n\r\n        if (isSingleAppointment) {\r\n            pm.expect(json.data).to.be.an(\"object\");\r\n            pm.expect(\r\n                Number(json.data.id),\r\n                \"Expected data.id to equal \" + id\r\n            ).to.eql(Number(id));\r\n        } else {\r\n            pm.expect(json.data).to.be.an(\"array\");\r\n        }\r\n    });\r\n}\r\n\r\nconsole.log(message);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/appointments",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "appointments"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create appointment",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const status = pm.response.code;\r\n\r\nlet message = \"\";\r\nlet expectedStatus;\r\n\r\nlet requestData = {};\r\n\r\ntry {\r\n    requestData = JSON.parse(pm.request.body?.raw || \"{}\");\r\n} catch (e) {\r\n    requestData = {};\r\n}\r\n\r\nconst contentType = pm.request.headers.get(\"Content-Type\") || \"\";\r\nconst authHeader = pm.request.headers.get(\"Authorization\") || \"\";\r\n\r\nif (!contentType.toLowerCase().includes(\"application/json\")) {\r\n    expectedStatus = 201;\r\n    message = \"Content-Type must be JSON.\";\r\n} else if (!authHeader) {\r\n    expectedStatus = 201;\r\n    message = \"Missing or malformed token.\";\r\n} else if (!requestData.pet_name) {\r\n    expectedStatus = 201;\r\n    message = \"errors.pet_name\";\r\n} else if (requestData.status === \"done\") {\r\n    expectedStatus = 201;\r\n    message = \"errors.status\";\r\n} else {\r\n    expectedStatus = 201;\r\n    message = \"new record with id\";\r\n}\r\n\r\npm.test(status + \" - \" + message, function () {\r\n    pm.expect(\r\n        status,\r\n        \"Expected status \" + expectedStatus + \" but received \" + status +\r\n        \". \" + message\r\n    ).to.eql(expectedStatus);\r\n\r\n    if (status === 201) {\r\n        const json = pm.response.json();\r\n        pm.expect(json.data?.id, \"New record ID is missing\").to.exist;\r\n    }\r\n});\r\n\r\nconsole.log(message);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{ \"owner_name\": \"Stal\", \"pet_name\": \"Bantay\", \"service\": \"Vaccination\", \"appointment_date\": \"2026-10-31 09:00:00\", \"status\": \"pending\" }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/appointments",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "appointments"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update appointment",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const status = pm.response.code;\r\n\r\nlet message = \"updated record\";\r\nconst expectedStatus = 200;\r\n\r\npm.test(status + \" - \" + message, function () {\r\n    pm.expect(\r\n        status,\r\n        \"Expected status \" + expectedStatus + \" but received \" + status +\r\n        \". \" + message\r\n    ).to.eql(expectedStatus);\r\n\r\n    if (status === 200) {\r\n        const json = pm.response.json();\r\n\r\n        pm.expect(json.data, \"Updated record is missing\").to.exist;\r\n    }\r\n});\r\n\r\nconsole.log(message);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n\"owner_name\": \"Maria Santos\",\r\n\"pet_name\": \"Bantay\", \"service\": \"Anti-rabies vaccination\", \"appointment_date\": \"2026-11-05 10:00:00\", \"status\": \"confirmed\" }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/appointments/1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "appointments",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete appointment",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const status = pm.response.code;\r\n\r\nlet message = \"\";\r\nconst expectedStatus = 204;\r\n\r\nif (status === 403) {\r\n    message = \"Admin role required.\";\r\n} else if (status === 204) {\r\n    message = \"empty body\";\r\n} else {\r\n    message = \"Unexpected response status.\";\r\n}\r\n\r\npm.test(status + \" - \" + message, function () {\r\n    pm.expect(\r\n        status,\r\n        \"Expected status \" + expectedStatus + \" but received \" + status +\r\n        \". \" + message\r\n    ).to.eql(expectedStatus);\r\n\r\n    if (status === 204) {\r\n        pm.expect(pm.response.text()).to.eql(\"\");\r\n    }\r\n});\r\n\r\nconsole.log(message);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{adminToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/appointments/1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "appointments",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Upload document",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const status = pm.response.code;\r\n\r\nlet message = \"\";\r\nconst expectedStatus = 201;\r\n\r\nif (status === 415) {\r\n    message = \"Only JPG, PNG, and PDF are allowed.\";\r\n} else if (status === 201) {\r\n    message = \"file_name, mime_type\";\r\n} else {\r\n    message = \"Unexpected response status.\";\r\n}\r\n\r\npm.test(status + \" - \" + message, function () {\r\n    pm.expect(\r\n        status,\r\n        \"Expected status \" + expectedStatus + \" but received \" + status +\r\n        \". \" + message\r\n    ).to.eql(expectedStatus);\r\n\r\n    if (status === 201) {\r\n        const json = pm.response.json();\r\n\r\n        pm.expect(json.file_name || json.data?.file_name, \"file_name is missing\").to.exist;\r\n        pm.expect(json.mime_type || json.data?.mime_type, \"mime_type is missing\").to.exist;\r\n    }\r\n});\r\n\r\nconsole.log(message);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "document",
+              "type": "file",
+              "src": [
+                "/C:/Users/Admin/Downloads/1mb-jpg-example-file.jpg"
+              ]
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/appointments/2/documents",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "appointments",
+            "2",
+            "documents"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{staffToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": ""
+    },
+    {
+      "key": "staffToken",
+      "value": ""
+    },
+    {
+      "key": "adminToken",
+      "value": ""
+    }
+  ]
+}
