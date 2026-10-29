@@ -36,7 +36,7 @@ final class AppointmentRepository
   }
 
   public function update(int $id, array $data): void 
-    { 
+  { 
         $sql = 'UPDATE appointments 
                 SET owner_name = :owner_name, 
                     pet_name = :pet_name, 
@@ -46,16 +46,30 @@ final class AppointmentRepository
                 WHERE id = :id'; 
                 
         $this->pdo->prepare($sql)->execute($data + ['id' => $id]); 
-    } 
+  } 
 
-    public function delete(int $id): bool 
-    { 
+  public function delete(int $id): bool 
+  { 
         $sql = 'DELETE FROM appointments WHERE id = :id'; 
         $stmt = $this->pdo->prepare($sql); 
         $stmt->execute(['id' => $id]); 
         
         return $stmt->rowCount() > 0; 
-    }
+  }
+
+    
+  public function findByStatus(string $status): array
+  {
+      $stmt = $this->pdo->prepare(
+          'SELECT * FROM appointments
+          WHERE status = :status
+          ORDER BY appointment_date'
+      );
+
+      $stmt->execute(['status' => $status]);
+
+      return $stmt->fetchAll();
+  }
 
   // Always add new methods ABOVE the final closing brace. 
 }

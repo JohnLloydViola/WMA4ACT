@@ -56,18 +56,37 @@ try {
         Response::success('Document uploaded.', $result, 201); 
     }
 
-    // ---- GET routes ---- 
-    if ($method === 'GET' && $id === null) { 
-        Response::success('Appointments retrieved.', $repo->all()); 
-    } 
+    // ---- GET routes ----
+    if ($method === 'GET' && $id === null) {
+        if (isset($_GET['status'])) {
+            $status = $_GET['status'];
 
-    if ($method === 'GET') { 
-        $appointment = $repo->find($id); 
-        if ($appointment === null) { 
-            Response::error('Appointment not found.', 404); 
-        } 
-        Response::success('Appointment retrieved.', $appointment); 
-    } 
+            if (
+                !is_string($status) ||
+                !in_array(
+                    $status,
+                    AppointmentValidator::STATUSES,
+                    true
+                )
+            ) {
+                Response::error(
+                    'Validation failed.',
+                    422,
+                    ['status' => ['Status is not allowed.']]
+                );
+            }
+
+            Response::success(
+                'Appointments retrieved.',
+                $repo->findByStatus($status)
+            );
+        }
+
+        Response::success(
+            'Appointments retrieved.',
+            $repo->all()
+        );
+    }
 
     // ---- Anything else ---- 
     // ---- POST: create ---- 

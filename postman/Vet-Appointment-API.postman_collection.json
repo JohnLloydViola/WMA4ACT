@@ -33,13 +33,19 @@
           }
         },
         "url": {
-          "raw": "{{baseUrl}}/api/appointments",
+          "raw": "{{baseUrl}}/api/appointments?status=pending",
           "host": [
             "{{baseUrl}}"
           ],
           "path": [
             "api",
             "appointments"
+          ],
+          "query": [
+            {
+              "key": "status",
+              "value": "pending"
+            }
           ]
         }
       },
@@ -63,7 +69,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{ \"owner_name\": \"Stal\", \"pet_name\": \"Bantay\", \"service\": \"Vaccination\", \"appointment_date\": \"2026-10-31 09:00:00\", \"status\": \"pending\" }",
+          "raw": "{ \"owner_name\": \"Stal\", \"pet_name\": \"Bantay\", \"service\": \"Vaccination\", \"appointment_date\": \"2026-10-31 09:00:00\", \"status\": \"completed\" }",
           "options": {
             "raw": {
               "language": "json"
