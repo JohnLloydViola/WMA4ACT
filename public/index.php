@@ -88,6 +88,17 @@ try {
         );
     }
 
+    // ---- GET: find by ID ----
+    if ($method === 'GET') {
+        $appointment = $repo->find($id);
+
+        if ($appointment === null) {
+            Response::error('Appointment not found.', 404);
+        }
+
+        Response::success('Appointment retrieved.', $appointment);
+    }
+
     // ---- Anything else ---- 
     // ---- POST: create ---- 
     if ($method === 'POST' && $id === null) { 
